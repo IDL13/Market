@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package api;
+
+option go_package = "/api";
+
+service Market {
+    rpc ResetStatistics(ResetStatisticsRequest) returns (ResetStatisticsResponse) {}
+    rpc SaveStatistics(SaveStatisticsRequest) returns (SaveStatisticsResponse) {}
+    rpc ShowStatistics(ShowStatisticsRequest) returns (ShowStatisticsResponse) {}
+}
+
+message Statistics {
+    string date = 1;
+    int32 views = 2;
+    int32 clicks = 3;
+    float cost = 4;
+    float cpc = 5;
+    float cpm = 6;
+}
+
+message ResetStatisticsRequest {}
+
+message ResetStatisticsResponse {
+    int32 status = 1;
+}
+
+message SaveStatisticsRequest {
+    string date = 1;
+    int32 views = 2;
+    int32 clicks = 3;
+    float cost = 4;
+}
+
+message SaveStatisticsResponse {
+    int32 status = 1;
+}
+
+message ShowStatisticsRequest {
+    string from = 1;
+    string to = 2;
+}
+
+message ShowStatisticsResponse {
+    repeated Statistics statistics = 1;
+}
