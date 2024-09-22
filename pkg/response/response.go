@@ -12,6 +12,7 @@ const (
 	Status400 = http.StatusBadRequest
 	Status404 = http.StatusNotFound
 	Status500 = http.StatusInternalServerError
+	Status505 = http.StatusHTTPVersionNotSupported
 )
 
 const (
