@@ -8,6 +8,7 @@ import (
 
 const (
 	Status100 = http.StatusContinue
+	Status102 = http.StatusProcessing
 	Status200 = http.StatusOK
 	Status300 = http.StatusMultipleChoices
 	Status400 = http.StatusBadRequest
