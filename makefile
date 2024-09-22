@@ -1,7 +1,3 @@
-path_reset:
-	export PATH=$PATH:$(go env GOPATH)/bin
-	export PATH="$GOPATH/bin:$PATH"
-
 run:
 	go run main.go
 
