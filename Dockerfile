@@ -1,6 +1,7 @@
 FROM golang:1.23.0
 
 RUN go version
+
 ENV GOPATH=/
 
 COPY ./ ./
