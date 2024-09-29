@@ -32,7 +32,7 @@ func TestWriteMessage(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rabbitMq := New("Test")
+			rabbitMq := New("key_stream")
 			marshalJson, err := json.Marshal(test.inputBody)
 			if err != nil {
 				panic(err)
