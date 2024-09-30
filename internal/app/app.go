@@ -27,6 +27,10 @@ func New() *App {
 	app.serverMux = http.NewServeMux()
 	app.server.Handler = app.serverMux
 
+	app.serverMux.HandleFunc("/save_statistic", app.handler.SaveStatistics)
+	app.serverMux.HandleFunc("/show_statistic", app.handler.ShowStatistics)
+	app.serverMux.HandleFunc("/reset_statistic", app.handler.ResetStatistics)
+
 	return app
 }
 
