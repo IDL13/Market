@@ -3,7 +3,6 @@ package app
 import (
 	"fmt"
 	http "net/http"
-	"os"
 	"time"
 
 	handler "github.com/IDL13/Market/internal/handler/http"
@@ -27,9 +26,9 @@ func New() *App {
 	app.serverMux = http.NewServeMux()
 	app.server.Handler = app.serverMux
 
-	app.serverMux.HandleFunc("/save_statistic", app.handler.SaveStatistics)
-	app.serverMux.HandleFunc("/show_statistic", app.handler.ShowStatistics)
-	app.serverMux.HandleFunc("/reset_statistic", app.handler.ResetStatistics)
+	app.serverMux.HandleFunc("POST /save_statistic/", app.handler.SaveStatistics)
+	app.serverMux.HandleFunc("GET /show_statistic/", app.handler.ShowStatistics)
+	app.serverMux.HandleFunc("DELETE /reset_statistic/", app.handler.ResetStatistics)
 
 	return app
 }
@@ -47,6 +46,5 @@ func (a *App) Run(stop chan bool) {
 	fmt.Printf("[http://0.0.0.0:%s/docs/]", a.server.Addr)
 	if err := a.server.ListenAndServe(); err != nil {
 		stop <- true
-		os.Exit(1)
 	}
 }

@@ -3,9 +3,11 @@ package http
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/IDL13/Market/internal/entity"
 	"github.com/IDL13/Market/internal/usecase"
+	"github.com/IDL13/Market/pkg/prometheus"
 	resp "github.com/IDL13/Market/pkg/response"
 )
 
@@ -26,52 +28,41 @@ func New() Handler {
 }
 
 func (h handler) SaveStatistics(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" || r.Method == "PATCH" || r.Method == "PUT" || r.Method == "DELETE" {
-		w.WriteHeader(resp.Status404)
-		w.Write(resp.New(resp.Status404, resp.Message400))
+	if usecase := h.usecase.Save(r.Body); usecase != 1 {
+		w.WriteHeader(resp.Status500)
+		w.Write(resp.New(resp.Status500, resp.Message500))
 	} else {
-		if usecase := h.usecase.Save(r.Body); usecase != 1 {
-			w.WriteHeader(resp.Status500)
-			w.Write(resp.New(resp.Status500, resp.Message500))
-		} else {
-			w.WriteHeader(resp.Status200)
-			w.Write(resp.New(resp.Status200, resp.Message200))
-		}
+		w.WriteHeader(resp.Status200)
+		w.Write(resp.New(resp.Status200, resp.Message200))
 	}
 }
 
 func (h handler) ShowStatistics(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" || r.Method == "PATCH" || r.Method == "PUT" || r.Method == "DELETE" {
-		w.WriteHeader(resp.Status404)
-		w.Write(resp.New(resp.Status400, resp.Message400))
-	} else {
-		usecase := entity.StatisticsResponse{
-			Statistics: h.usecase.Show(r.Body),
-		}
-
-		respBody, err := json.Marshal(usecase)
-
-		if err != nil {
-			w.WriteHeader(resp.Status500)
-			w.Write(resp.New(resp.Status500, resp.Message500))
-		}
-
-		w.WriteHeader(resp.Status200)
-		w.Write(resp.New(resp.Status200, string(respBody)))
+	start := time.Now()
+	defer func() {
+		prometheus.ObservRequest(time.Since(start), r.Response.StatusCode)
+	}()
+	usecase := entity.StatisticsResponse{
+		Statistics: h.usecase.Show(r.Body),
 	}
+
+	respBody, err := json.Marshal(usecase)
+
+	if err != nil {
+		w.WriteHeader(resp.Status500)
+		w.Write(resp.New(resp.Status500, resp.Message500))
+	}
+
+	w.WriteHeader(resp.Status200)
+	w.Write(resp.New(resp.Status200, string(respBody)))
 }
 
 func (h handler) ResetStatistics(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" || r.Method == "PATCH" || r.Method == "PUT" || r.Method == "DELETE" {
-		w.WriteHeader(resp.Status404)
-		w.Write(resp.New(resp.Status404, resp.Message400))
+	if usecase := h.usecase.Reset(); usecase != 1 {
+		w.WriteHeader(resp.Status500)
+		w.Write(resp.New(resp.Status500, resp.Message500))
 	} else {
-		if usecase := h.usecase.Reset(); usecase != 1 {
-			w.WriteHeader(resp.Status500)
-			w.Write(resp.New(resp.Status500, resp.Message500))
-		} else {
-			w.WriteHeader(resp.Status200)
-			w.Write(resp.New(resp.Status200, resp.Message200))
-		}
+		w.WriteHeader(resp.Status200)
+		w.Write(resp.New(resp.Status200, resp.Message200))
 	}
 }
