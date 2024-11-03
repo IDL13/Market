@@ -14,7 +14,7 @@ type App struct {
 	serverMux *http.ServeMux
 }
 
-func New() *App {
+func NewApp() *App {
 	app := &App{
 		server: &http.Server{
 			Addr:           ":8080",
